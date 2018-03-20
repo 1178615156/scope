@@ -1,2 +1,8 @@
+**/.idea
+**/target
+**/.ipynb_checkpoints
+**/log
+
+
 *.class
 *.log
