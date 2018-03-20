@@ -22,18 +22,21 @@ class ScopeImpl(val c: blackbox.Context) {
   }
 
   def debug(s: String) = {
-    //    println(s)
+//        println(s)
   }
 
   type Func = PartialFunction[Tree, Option[TermName]]
 
   val PackageName: String = this.getClass.getPackage.getName
-
+  val FullName = s"$PackageName.Scope"
   def check(bodys: List[Tree], names: List[TermName] = Nil): Unit = {
     if(bodys.nonEmpty) {
       val tree = bodys.head
-
       val caseTerm: Func = {
+        case Apply(TypeApply(Select(Ident(TermName("Scope")), TermName("lifting")), _),value) =>
+          debug(s"lift : $value")
+          None
+
         case Apply(TypeApply(Select(Select(Ident(TermName(PackageName)), TermName("Scope")), TermName("lifting")), _), value) =>
           debug(s"lift : $value")
           None
