@@ -22,27 +22,28 @@ class ScopeImpl(val c: blackbox.Context) {
   }
 
   def debug(s: String) = {
-//        println(s)
+    //        println(s)
+  }
+
+  def info(s: String) = {
+    println(s)
   }
 
   type Func = PartialFunction[Tree, Option[TermName]]
 
   val PackageName: String = this.getClass.getPackage.getName
-  val FullName = s"$PackageName.Scope"
+  val FullName            = s"$PackageName.Scope"
+
   def check(bodys: List[Tree], names: List[TermName] = Nil): Unit = {
     if(bodys.nonEmpty) {
       val tree = bodys.head
       val caseTerm: Func = {
-        case Apply(TypeApply(Select(Ident(TermName("Scope")), TermName("lifting")), _),value) =>
+        case Apply(TypeApply(Select(call, TermName("lifting")), _), value) if call equalsStructure reify(Scope).tree =>
           debug(s"lift : $value")
           None
 
-        case Apply(TypeApply(Select(Select(Ident(TermName(PackageName)), TermName("Scope")), TermName("lifting")), _), value) =>
-          debug(s"lift : $value")
-          None
-
-        case Ident(name: TermName)                             => waringNoIn(tree.pos, name, names); None
         case name: TermName                                    => waringNoIn(tree.pos, name, names); None
+        case Ident(name: TermName) if !tree.symbol.isStatic    => waringNoIn(tree.pos, name, names); None
         case Select(This(className: TypeName), name: TermName) =>
           if(!names.contains(name) &&
 

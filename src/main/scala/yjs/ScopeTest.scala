@@ -1,5 +1,8 @@
 package yjs
 
+object Obj{
+  val obj = 1
+}
 class ScopeTest {
   val a = 1
 
@@ -11,6 +14,7 @@ class ScopeTest {
       val b = 2
       val z = a + b // warn use `a`
       val e = l + b // ok
+      val x = Obj.obj // ok obj is static
 
       // ok
       List(1) match {
